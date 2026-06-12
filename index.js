@@ -267,23 +267,30 @@ class DesktopEnvironment {
         this.addIcon(0, '📁', 'Projets', './projets.html');
         this.addIcon(1, '📄', 'Notes', './notes.html');
         this.addIcon(2, '🌐', 'Navigateur', './pages/navigateur.html'); 
-        this.addIcon(4, '📄', 'Doomscroller', 'https://mathishuynh.github.io/Doomscroller-ClickerGame/');
-        this.addIcon(5, '📄', 'Akropolis', 'https://mathishuynh.github.io/Akropolis-Version-Terminal/'); 
+        this.addIcon(4, './assets/icons/doomscroller.png', 'Doomscroller.exe', 'https://mathishuynh.github.io/Doomscroller-ClickerGame/');
+        this.addIcon(5, './assets/icons/akropolis.png', 'Akropolis.exe', 'https://mathishuynh.github.io/Akropolis-Version-Terminal/'); 
         this.addIcon(3, '📄', 'CV.pdf', './assets/documents/CV_HUYNH_Mathis.pdf');
         this.addIcon(10, '🗑️', 'Corbeille', './corbeille.html');
     }
 
     // Place l'icône dans une case spécifique
-    addIcon(cellIndex, emoji, name, url) {
+    addIcon(cellIndex, source, name, url) {
         const cells = this.desktop.querySelectorAll('.grid-cell');
         if (cells[cellIndex] && !cells[cellIndex].hasChildNodes()) {
             const icon = document.createElement('div');
             icon.className = 'desktop-icon';
             icon.draggable = true;
-            icon.innerHTML = `
-                <div class="icon-img">${emoji}</div>
+            if(source.indexOf("assets")===-1){
+                icon.innerHTML = `
+                <div class="icon-img">${source}</div>
                 <span class="icon-label">${name}</span>
-            `;
+                `;
+            }else{
+                icon.innerHTML = `
+                <div class="icon-img"><img src='${source}'></div>
+                <span class="icon-label">${name}</span>
+                `;
+            }
             
             icon.addEventListener('dblclick', () => {
                 new WindowApp(name, url);
