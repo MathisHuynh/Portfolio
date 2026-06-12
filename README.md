@@ -41,3 +41,16 @@ portfolio/
 ├── js/                 <-- Logique applicative et scripts d'animation
 └── assets/             <-- Médias et ressources statiques
     └── documents/      <-- Contient notamment le CV au format PDF
+
+```
+
+## Licence / License
+
+Copyright © 2026 Mathis HUYNH. Tous droits réservés.
+
+Ce projet est un produit fini et personnel présenté dans le cadre de mon portfolio. 
+Le code source est mis à disposition uniquement pour consultation. Toute copie, modification, distribution ou utilisation commerciale de tout ou partie du code ou des assets (images, sons) est strictement interdite sans autorisation écrite préalable.
+
+---
+
+*Copyright © 2026 Mathis HUYNH. All rights reserved.*
