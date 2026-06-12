@@ -217,8 +217,7 @@ class DesktopEnvironment {
     constructor(containerId) {
         this.desktop = document.getElementById(containerId);
         this.draggedIcon = null;
-        
-        // On définit la taille des cases directement en REM (doit correspondre au CSS)
+
         this.cellWidthRem = 12; 
         this.cellHeightRem = 14;
 
@@ -244,7 +243,7 @@ class DesktopEnvironment {
         const safetyPaddingPx = 3 * remInPx;
 
         const cols = Math.floor((window.innerWidth - safetyPaddingPx) / cellWidthPx)-2;
-        const rows = Math.floor((window.innerHeight - safetyPaddingPx) / cellHeightPx)-2;
+        const rows = Math.floor((window.innerHeight - safetyPaddingPx) / cellHeightPx)-1;
         
         const finalCols = Math.max(2, cols);
         const finalRows = Math.max(2, rows);
@@ -268,6 +267,9 @@ class DesktopEnvironment {
         this.addIcon(0, '📁', 'Projets', './projets.html');
         this.addIcon(1, '📄', 'Notes', './notes.html');
         this.addIcon(2, '🌐', 'Navigateur', './pages/navigateur.html'); 
+        this.addIcon(4, '📄', 'Doomscroller', 'https://mathishuynh.github.io/Doomscroller-ClickerGame/');
+        this.addIcon(5, '📄', 'Akropolis', 'https://mathishuynh.github.io/Akropolis-Version-Terminal/'); 
+        this.addIcon(3, '📄', 'CV.pdf', './assets/documents/CV_HUYNH_Mathis.pdf');
         this.addIcon(10, '🗑️', 'Corbeille', './corbeille.html');
     }
 

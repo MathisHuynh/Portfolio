@@ -35,9 +35,11 @@ L'accent a été mis sur la performance, l'accessibilité et une expérience uti
 
 ```text
 portfolio/
+├── index.js            <-- Script principal
 ├── index.html          <-- Point d'entrée principal du site
 ├── README.md           <-- Documentation du projet
 ├── css/                <-- Feuilles de style référencées par modules
+├── pages/              <-- Contient l'HTML des fenêtres des applications du faux OS
 ├── js/                 <-- Logique applicative et scripts d'animation
 └── assets/             <-- Médias et ressources statiques
     └── documents/      <-- Contient notamment le CV au format PDF
