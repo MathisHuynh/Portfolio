@@ -1,0 +1,272 @@
+@import url('https://fonts.cdnfonts.com/css/w95fa');
+
+html {
+    font-size: .8vmin;
+    font-family: 'W95FA', sans-serif;
+    image-rendering: pixelated;
+}
+
+body{
+    background-color: #5A7EDC;
+    padding: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+body img{
+    pointer-events: none;
+    user-select: none;
+}
+
+
+#loader-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 3s ease;
+    background-image: url("./assets/boot_screen.png");
+    background-size: 100% 100%;
+}
+
+.loader-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+.progress-bar-border {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    height: 4rem;
+    background-color: #C0C0C0;
+}
+.progress-bar-fill {
+    background-color: #000080;
+    height: 100%;
+    width: 0%;
+}
+
+
+.win95{
+    border: 0.5rem solid;
+    border-color: #FFF #000 #000 #FFF;
+    background-color: #C0C0C0;
+}
+.task-bar{
+    padding: 0.2rem 1rem 0.2rem 1rem;
+    position: absolute;
+    width: 101%;
+    bottom: -1rem;
+    left: -1rem;
+    display: flex;
+    height: 7rem;
+}
+
+.startup-button{
+    width: 16.3rem;
+    height: 5.2rem;
+    display: flex;
+    flex-direction: row;
+}
+.startup-button:hover{
+    cursor: pointer;
+    filter: brightness(.9);
+}
+.startup-button img{
+    width: 35%;
+}
+.startup-button p{
+    user-select: none;
+    pointer-events: none;
+    transform: translateY(-2.5rem);
+    font-size: 3.5rem;
+    font-weight:bolder;
+}
+
+.taskbar-tabs {
+    display: flex;
+    gap: 0.5rem;
+    flex-grow: 1;
+    height: 6rem;
+    overflow-x: auto;
+}
+.taskbar-tab {
+    width: 16rem;
+    height: 90%;
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    font-size: 2.2rem;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.taskbar-tab:hover {
+    filter: brightness(.9);
+}
+.taskbar-tab.active {
+    border-color: #000 #FFF #FFF #000 !important;
+    background-color: #dfdfdf;
+    font-weight: bold;
+    padding-left: 1.2rem;
+    padding-top: 0.2rem;
+}
+
+
+.texte {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 2%;
+    gap: 2vw;
+    width: 75%;
+    justify-content: flex-start;
+}
+.texte p {
+    font-size: 2rem;
+    margin: 0;
+}
+
+.desktop {
+    display: grid;
+    gap: 10px;
+    padding: 20px;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+.grid-cell {
+    /* width: 90px; */
+    /* height: 100px; */
+    width: 14rem;
+    height: 14rem;
+    border: 1px dashed transparent; /* Mettre une couleur rgba(255,255,255,0.2) pour voir la grille en dev */
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.grid-cell.drag-over {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.desktop-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: 100%;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+    padding-top: 10px;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+.desktop-icon:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.icon-img {
+    font-size: 5rem;
+    margin-bottom: 5px;
+}
+
+.icon-label {
+    font-size: 2rem;
+    text-align: center;
+    word-wrap: break-word;
+    max-width: 95%;
+    line-height: 1.2;
+}
+
+
+/* --- Fenêtres OS --- */
+.os-window {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    width: 600px;
+    height: 400px;
+    min-width: 250px;
+    min-height: 200px;
+    border: 0.4rem solid;
+    border-color: #FFF #000 #000 #FFF;
+    background-color: #C0C0C0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    resize: both; /* Permet le redimensionnement natif via le coin inférieur droit */
+}
+
+.window-header {
+    background-color: #000080;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: grab;
+    user-select: none;
+    padding: 0.4rem 0.8rem;
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: white;
+}
+
+.window-header:active {
+    cursor: grabbing;
+}
+
+.window-controls {
+    display: flex;
+    gap: 8px;
+    height: fit-content;
+    align-items: center;
+}
+
+.window-controls .maximize-btn, .window-controls .close-btn , .window-controls .minimize-btn{
+    width: 3rem;
+    height: 3rem;
+    background-color: #C0C0C0;
+    border: 0.2rem solid;
+    border-color: #FFF #000 #000 #FFF;
+    color: black;
+    font-size: 1.8rem;
+    font-weight: bold;
+    padding: 0 0.5rem;
+    cursor: pointer;
+}
+.window-controls .maximize-btn:hover, .window-controls .close-btn:hover{
+    background-color: #999999;
+}
+
+.os-window.is-maximized {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    resize: none; /* Désactive le redimensionnement manuel en plein écran */
+    transform: none !important;
+}
+
+.os-window.is-minimized {
+    display: none !important;
+}
+
+.window-content {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: #fff;
+}
+
+.os-window.is-interacting .window-content {
+    pointer-events: none;
+}
