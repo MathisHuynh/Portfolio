@@ -139,7 +139,7 @@ class WindowApp {
             this.minimizeWindow();
         });
 
-        // Bouton Maximiser
+        // Bouton Plein-écran
         maximizeBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             this.toggleMaximize();
@@ -206,12 +206,19 @@ class WindowApp {
 }
 
 
+const specialNames=[
+    "LinkedIn"
+];
 
+const folderData = {
+    "Projets": [
+        { name: "Doomscroller", icon: "./assets/icons/doomscroller.png", url: "https://mathishuynh.github.io/Doomscroller-ClickerGame/" },
+        { name: "Akropolis", icon: "./assets/icons/akropolis.png", url: "https://mathishuynh.github.io/Akropolis-Version-Terminal/" }
+    ]
+};
 
-
-
-
-
+// Registre global des dossiers
+const folderDOMs = {}; 
 
 class DesktopEnvironment {
     constructor(containerId) {
@@ -229,7 +236,7 @@ class DesktopEnvironment {
         this.populateInitialIcons();
         this.setupDragAndDrop();
 
-        // Recalculer la grille en mode "resize" dès que la fenêtre bouge
+        // Recalculer la grille dès que la fenêtre bouge
         window.addEventListener('resize', () => this.generateGrid(true));
     }
 
@@ -264,13 +271,14 @@ class DesktopEnvironment {
 
     // Icônes initiales
     populateInitialIcons() {
-        this.addIcon(0, '📁', 'Projets', './projets.html');
-        this.addIcon(1, '📄', 'Notes', './notes.html');
-        this.addIcon(2, '🌐', 'Navigateur', './pages/navigateur.html'); 
-        this.addIcon(4, './assets/icons/doomscroller.png', 'Doomscroller.exe', 'https://mathishuynh.github.io/Doomscroller-ClickerGame/');
-        this.addIcon(5, './assets/icons/akropolis.png', 'Akropolis.exe', 'https://mathishuynh.github.io/Akropolis-Version-Terminal/'); 
-        this.addIcon(3, '📄', 'CV.pdf', './assets/documents/CV_HUYNH_Mathis.pdf');
-        this.addIcon(10, '🗑️', 'Corbeille', './corbeille.html');
+        this.addFolder(0, '📁', 'Mes Projets', folderData['Projets']);
+        this.addIcon(1, '🌐', 'Navigateur', './pages/navigateur.html');
+        this.addIcon(2, '📄', 'Notes', './notes.html');
+        this.addIcon(3, './assets/icons/pdf.png', 'CV.pdf', './assets/documents/CV_HUYNH_Mathis.pdf');
+        this.addIcon(4,'./assets/icons/linkedin.png','LinkedIn','https://www.linkedin.com/in/mathis-huynh/')
+        this.addIcon(17, './assets/icons/doomscroller.png', 'Doomscroller.exe', 'https://mathishuynh.github.io/Doomscroller-ClickerGame/');
+        this.addIcon(34, './assets/icons/akropolis.png', 'Akropolis.exe', 'https://mathishuynh.github.io/Akropolis-Version-Terminal/'); 
+        this.addIcon(16, '🗑️', 'Corbeille', './corbeille.html');
     }
 
     // Place l'icône dans une case spécifique
@@ -293,7 +301,60 @@ class DesktopEnvironment {
             }
             
             icon.addEventListener('dblclick', () => {
-                new WindowApp(name, url);
+                if(specialNames.includes(name)){
+                    window.open(url, '_blank').focus();
+                }else new WindowApp(name, url);
+            });
+
+            cells[cellIndex].appendChild(icon);
+        }
+    }
+
+    addFolder(cellIndex, source, name, content) {
+        // Initialisation unique du contenu du dossier en mémoire
+        if (!folderDOMs[name]) {
+            const grid = document.createElement('div');
+            grid.className = 'folder-content';
+            
+            content.forEach(item => {
+                const icon = document.createElement('div');
+                icon.className = 'desktop-icon';
+                icon.draggable = true; 
+                
+                const imgContent = item.icon.indexOf("assets") === -1 
+                    ? `<div class="icon-img">${item.icon}</div>` 
+                    : `<div class="icon-img"><img src='${item.icon}'></div>`;
+
+                icon.innerHTML = `
+                    ${imgContent}
+                    <span class="icon-label">${item.name}</span>
+                `;
+                
+                icon.addEventListener('dblclick', () => {
+                    if (item.name === "LinkedIn") {
+                         window.open(item.url, '_blank').focus();
+                    } else {
+                         new WindowApp(item.name, item.url);
+                    }
+                });
+                
+                grid.appendChild(icon);
+            });
+            // Sauvegarde de l'élément HTML complet
+            folderDOMs[name] = grid;
+        }
+
+        // Création de l'icône du dossier sur le bureau
+        const cells = this.desktop.querySelectorAll('.grid-cell');
+        if (cells[cellIndex]) {
+            const icon = document.createElement('div');
+            icon.className = 'desktop-icon';
+            icon.draggable = true; // Rendre le dossier lui-même déplaçable
+            icon.innerHTML = `<div class="icon-img">${source}</div><span class="icon-label">${name}</span>`;
+            
+            icon.addEventListener('dblclick', () => {
+                // On transmet l'élément HTML en mémoire à FolderApp
+                new FolderApp(name, folderDOMs[name]);
             });
 
             cells[cellIndex].appendChild(icon);
@@ -306,6 +367,11 @@ class DesktopEnvironment {
             const icon = e.target.closest('.desktop-icon');
             if (icon) {
                 this.draggedIcon = icon;
+                
+                // Compatibilité inter-navigateurs
+                e.dataTransfer.setData('text/plain', 'icon');
+                e.dataTransfer.effectAllowed = 'move';
+                
                 setTimeout(() => icon.style.opacity = '0.4', 0);
             }
         });
@@ -319,36 +385,87 @@ class DesktopEnvironment {
 
         this.desktop.addEventListener('dragover', (e) => {
             e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
         });
 
         this.desktop.addEventListener('dragenter', (e) => {
             e.preventDefault();
             const cell = e.target.closest('.grid-cell');
+            const folder = e.target.closest('.folder-content');
+
+            // On survole une case vide du bureau
             if (cell && !cell.querySelector('.desktop-icon')) {
                 cell.classList.add('drag-over');
+            } 
+            // On survole l'intérieur d'un dossier ouvert
+            else if (folder) {
+                folder.classList.add('drag-over');
             }
         });
 
         this.desktop.addEventListener('dragleave', (e) => {
             const cell = e.target.closest('.grid-cell');
-            if (cell) {
-                cell.classList.remove('drag-over');
-            }
+            const folder = e.target.closest('.folder-content');
+
+            if (cell) cell.classList.remove('drag-over');
+            if (folder) folder.classList.remove('drag-over');
         });
 
         this.desktop.addEventListener('drop', (e) => {
             e.preventDefault();
             const cell = e.target.closest('.grid-cell');
+            const folder = e.target.closest('.folder-content');
             
+            // Dépôt sur la grille du bureau
             if (cell) {
                 cell.classList.remove('drag-over');
+                // On s'assure que la case est vide avant de lâcher l'icône
                 if (!cell.querySelector('.desktop-icon') && this.draggedIcon) {
                     cell.appendChild(this.draggedIcon);
+                }
+            } 
+            // Dépôt à l'intérieur d'un dossier
+            else if (folder) {
+                const targetWindow = folder.closest('.os-window');
+                const targetFolderName = targetWindow.querySelector('.window-title').textContent;
+                folder.classList.remove('drag-over');
+                if (this.draggedIcon && this.draggedIcon.querySelector(".icon-label").textContent !== targetFolderName){
+                    folder.appendChild(this.draggedIcon);
                 }
             }
         });
     }
 }
+
+class FolderApp extends WindowApp {
+    constructor(title, folderDOMElement) {
+        // On appelle le constructeur parent, mais avec une URL vide
+        super(title, "");
+        this.folderDOMElement = folderDOMElement;
+        this.renderFolderContent();
+    }
+
+    renderFolderContent() {
+        const iframe = this.windowElement.querySelector('iframe');
+        // On remplace l'iframe par notre grille pré-générée
+        this.windowElement.replaceChild(this.folderDOMElement, iframe);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     new DesktopEnvironment('desktop');
 });
+
+const date = document.getElementById("date");
+const heure = document.getElementById("hour");
+setInterval(()=>{
+    const currentDate = new Date();
+    const currentDayOfMonth = currentDate.getDate();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+    date.textContent = currentDayOfMonth + "/" + (currentMonth<10 ? "0":"") + (currentMonth + 1) + "/" + currentYear;
+
+    const currentHour = currentDate.getHours();
+    const currentMinute = currentDate.getMinutes();
+    hour.textContent = currentHour+":"+ (currentMinute<10 ? "0":"") +currentMinute;
+},1000)
